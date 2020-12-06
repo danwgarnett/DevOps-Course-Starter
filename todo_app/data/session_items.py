@@ -68,6 +68,7 @@ def save_item(item):
 
     return item
 
+
 def clear_items():
     """
     Removes all entries from the session cookie
@@ -76,4 +77,12 @@ def clear_items():
     session['items'] = []
 
     return
-    
+
+
+def clear_item(item):
+    existing_items = get_items()
+    # updated_items = [existing_item for existing_item in existing_items if existing_item['id'] != id]
+
+    # session['items'] = []
+    existing_items.remove(item)
+    session['items'] = existing_items

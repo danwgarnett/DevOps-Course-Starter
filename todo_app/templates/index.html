@@ -1,36 +1,61 @@
 {% extends "layout.html" %}
-{% block title %}To-Do App{% endblock %}
+{% block title %} To-Do App {% endblock %}
 
 {% block content %}
+  <body style="background-color:#333333;">
+  </body>
+
   <div class="jumbotron">
-    <h1 class="display-4">To-Do App</h1>
-    <p class="lead">Just another to-do app.</p>
+    <h1 class="display-5"><b>To-Do App</b></h1>
+    <p class="lead">McLaren don't do todo apps, but if they did...<br>
+          ...they'd probably be better than this to be honest...</p>
+    <br>
+    <p>&nbsp; version {{ version }}</p>
   </div>
+
+  {% if statusUpdate %}
+    <div>
+      <p style="color:orange"> {{ statusUpdate }} </p>
+    </div>
+  {% endif %}
 
   <div class="row">
     <div class="col-md-12">
-      <h2>Items</h2>
-      <ul class="list-group mb-4">
+      <h2 style="color:#BBBBBB">Items on your to-do list:</h2><br>
+      <ul class="list-group mb-4" style="margin-left: 2em">
+        <!-- Use a for loop to process all the items -->
         {% for item in todoItems %}
-          <li>{{ item }}</li>
+        <p>  
+          <b style="color:#BBBBBB">{{ item['status'] }} &nbsp; | &nbsp; </b>
+          <b style="color:#BBBBBB">{{ item['title'] }} &nbsp; | &nbsp; </b>  
+          <a href="{{url_for('clearItem', item=item) }}">Clear Item</a>
+        </p>
         {% endfor %}
       </ul>
     </div>
-  </div>
+  </div><br>
 
   <!-- Form which will send a POST request to add items into the list -->
   <!-- Not sure why using a different url isn't allowing POST methods, e.g. action="{{ url_for('addItem') }}" -->
-  <form method="POST">
-    <label>Add a new todo item:
-      <input type="text" name="itemTitle">
-    </label>
-    <button>Add</button>
-  </form>
+  <div><hr><br>
+    <form method="POST">
+      <label style="color:#BBBBBB">Add a new todo item:
+        <input type="text" name="itemTitle">
+      </label>
+      <button>Add</button>
+    </form>
+  </div><br>
 
   <!-- Try out a refresh link to practice redirects -->
-  <li><a href="{{ url_for('index') }}">Refresh List</a></li>
+  <div><hr><br>
+    <p>
+    <b><a href="{{ url_for('index') }}">Refresh List</a></b>
+    </p>
 
-  <!-- Try out a refresh link to practice redirects -->
-  <li><a href="{{ url_for('clearItems') }}">Clear List</a></li>
+    <!-- Try out a refresh link to practice redirects -->
+    <p>
+    <b><a href="{{ url_for('clearItems') }}">Clear List</a></b>
+    </p>
+  </div>
 
 {% endblock %}
