@@ -12,9 +12,25 @@
       <h2>Items</h2>
       <ul class="list-group mb-4">
         {% for item in todoItems %}
-          <h3>{{ item }}</h3>
+          <li>{{ item }}</li>
         {% endfor %}
       </ul>
     </div>
   </div>
+
+  <!-- Form which will send a POST request to add items into the list -->
+  <!-- Not sure why using a different url isn't allowing POST methods, e.g. action="{{ url_for('addItem') }}" -->
+  <form method="POST">
+    <label>Add a new todo item:
+      <input type="text" name="itemTitle">
+    </label>
+    <button>Add</button>
+  </form>
+
+  <!-- Try out a refresh link to practice redirects -->
+  <li><a href="{{ url_for('index') }}">Refresh List</a></li>
+
+  <!-- Try out a refresh link to practice redirects -->
+  <li><a href="{{ url_for('clearItems') }}">Clear List</a></li>
+
 {% endblock %}

@@ -67,3 +67,13 @@ def save_item(item):
     session['items'] = updated_items
 
     return item
+
+def clear_items():
+    """
+    Removes all entries from the session cookie
+    """
+
+    session['items'] = []
+
+    return
+    
