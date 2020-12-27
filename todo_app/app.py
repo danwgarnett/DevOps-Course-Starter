@@ -1,6 +1,6 @@
 
 from flask import Flask, render_template, request, redirect, url_for
-from todo_app.data.session_items import get_item, get_items, add_item, clear_items, clear_item, update_item_status
+from todo_app.data.session_items import get_item, get_items, add_item, clear_items, clear_item, update_item_status, sort_items
 from todo_app.flask_config import Config
 
 app = Flask(__name__)
@@ -10,6 +10,9 @@ app.config.from_object(Config)
 @app.route('/')
 @app.route('/<op_message>')
 def index(op_message = ""):
+    # Ensure that the items are sorted by status prior to loading
+    sort_items()
+    
     # Get the list of items from the pre-loaded session file
     todoItems = get_items()
 

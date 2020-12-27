@@ -1,4 +1,5 @@
 from flask import session
+from operator import itemgetter, attrgetter
 
 _DEFAULT_ITEMS = [
     { 'id': 1, 'status': 'Not Started', 'title': 'List saved todo items' },
@@ -110,5 +111,31 @@ def update_item_status(id, new_status):
     selected_item['status'] = new_status
 
     save_item(selected_item)
+
+    return
+
+
+def sort_items():
+    """
+    Function to sort items based on their status:
+    Not Started > In Progress > Completed
+    """
+    current_items = get_items()
+    sorted_items = sorted(current_items, key=itemgetter('status'), reverse = 1)
+
+    # # Decorate items with a priority index according to their status
+    # for existing_item in current_items:
+    #     if existing_item['status'] == 'Not Started':
+    #         decorated_item = existing_item['idx'] = 1
+
+    #     elif existing_item['status'] == 'In Progress':
+    #         decorated_item = existing_item['idx'] = 2
+
+    #     else:
+    #         decorated_item = existing_item['idx'] = 3
+
+    #     sorted_items.append(decorated_item)
+
+    session['items'] = sorted_items
 
     return
