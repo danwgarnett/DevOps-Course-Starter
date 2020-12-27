@@ -79,10 +79,36 @@ def clear_items():
     return
 
 
-def clear_item(item):
-    existing_items = get_items()
-    # updated_items = [existing_item for existing_item in existing_items if existing_item['id'] != id]
+def clear_item(id):
+    """
+    Removes a single item, specified by its ID in the list of existing items
+    """
+    
+    # Get the item for reference before it is deleted
+    cleared_item = get_item(id)
 
-    # session['items'] = []
-    existing_items.remove(item)
-    session['items'] = existing_items
+    # Get all items and clear only the specified item
+    existing_items = get_items()
+    updated_items = [existing_item for existing_item in existing_items if existing_item['id'] != id]
+
+    session['items'] = updated_items
+
+    return cleared_item
+
+
+def update_item_status(id, new_status):
+    """
+    Update the status of the specified item in the list with the supplied string.
+
+    Args:
+        new_status: A string providing the status to be updated
+        id: an integer which identifies the item from the list
+
+    """
+    selected_item = get_item(id)
+
+    selected_item['status'] = new_status
+
+    save_item(selected_item)
+
+    return
