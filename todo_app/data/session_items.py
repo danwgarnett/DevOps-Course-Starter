@@ -120,21 +120,12 @@ def sort_items():
     Function to sort items based on their status:
     Not Started > In Progress > Completed
     """
+
+    # Get the current, unsorted list of items
     current_items = get_items()
+
+    # Note that conveniently, we want reverse alphabetical order, but decorators might be more robust here?
     sorted_items = sorted(current_items, key=itemgetter('status'), reverse = 1)
-
-    # # Decorate items with a priority index according to their status
-    # for existing_item in current_items:
-    #     if existing_item['status'] == 'Not Started':
-    #         decorated_item = existing_item['idx'] = 1
-
-    #     elif existing_item['status'] == 'In Progress':
-    #         decorated_item = existing_item['idx'] = 2
-
-    #     else:
-    #         decorated_item = existing_item['idx'] = 3
-
-    #     sorted_items.append(decorated_item)
 
     session['items'] = sorted_items
 
