@@ -10,7 +10,7 @@
     font-weight: bold;
   }
 
-  .display-1 {
+  .display-1{
     font-family: 'Courier New', Courier, monospace;
     font-size: 4rem;
     font-weight: 350;
@@ -18,7 +18,7 @@
     text-shadow: 3px 3px #080808;
   }
 
-  .display-2 {
+  .display-2{
       font-size: 2.25rem;
       font-weight: 400;
       line-height: 1;
@@ -50,10 +50,14 @@
   <!-- Display the list itself -->
   <div class="row">
     <div class="col-md-12">
-      <h2 style="color:#e0e0e0">Verily! There are but {{ todoItems|length }} Items on your to-do list:</h2><br>
+      {% if num_open_items > 0 %}
+      <h2 style="color:#e0e0e0">Drat! Thou hast {{ num_open_items }} items upon thine to-do list:</h2><br>
+      {% else %}
+      <h2 style="color:#e0e0e0">Verily! The list is bare.. Go merrily this day!</h2><br>
+      {% endif %}
       <ul class="list-group mb-4" style="margin-left: 2em">
         <!-- Use a for loop to process all the items -->
-        {% for item in todoItems %}
+        {% for item in todo_items %}
           <p style="color:#e0e0e0">
             <b>[#{{ item['id'] }}] &nbsp; </b>
             <b>{{ item['title'] }} &nbsp; | &nbsp; </b>    
