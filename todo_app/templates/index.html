@@ -1,38 +1,68 @@
 {% extends "layout.html" %}
-{% block title %} To-Do App {% endblock %}
+{% block title %} [to_do || !to_do] app {% endblock %}
 
 {% block content %}
-  <body style="background-color:#333333;">
-  </body>
+<style type="text/css">
+  .jumbotron{
+    background-image: url('https://i.ibb.co/JdznB2j/thug-shakespeare.jpg');
+    background-size: cover;
+    color: #f8fae7;
+    font-weight: bold;
+  }
+
+  .display-1 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 4rem;
+    font-weight: 350;
+    line-height: 1.2;
+    text-shadow: 3px 3px #080808;
+  }
+
+  .display-2 {
+      font-size: 2.25rem;
+      font-weight: 400;
+      line-height: 1;
+      text-shadow: 3px 3px #080808;
+  }
+
+  .separator{
+    border: 1.5px;
+    border-style:solid;
+  }
+</style>
+
+<body style="background-color:#434446;">
+</body>
 
   <div class="jumbotron">
-    <h1 class="display-5"><b>To-Do App</b></h1><p>&nbsp; Version: {{ version }}</p>
-    <p class="lead">McLaren don't do todo apps, but if they did...<br>
-      &nbsp; ...they'd probably be better than this to be honest...</p>
-    <br>
+    <h1 class="display-1"><b>[to_do||!to_do]</b></h1> 
+    <p style="margin-left: 30em; color: #333333;"> Version: {{ version }} </p>
+    <p class="display-2"> &nbsp; ...that is the question...</p>
   </div>
 
+  <!-- Display a banner message for the user each time an operation is completed -->
   {% if op_message %}
     <div>
       <p style="color:orange"> {{ op_message }} </p>
     </div>
   {% endif %}
 
+  <!-- Display the list itself -->
   <div class="row">
     <div class="col-md-12">
-      <h2 style="color:#BBBBBB">Items on your to-do list:</h2><br>
+      <h2 style="color:#e0e0e0">Verily! There are but {{ todoItems|length }} Items on your to-do list:</h2><br>
       <ul class="list-group mb-4" style="margin-left: 2em">
         <!-- Use a for loop to process all the items -->
         {% for item in todoItems %}
-          <p style="color:#BBBBBB">
+          <p style="color:#e0e0e0">
             <b>[#{{ item['id'] }}] &nbsp; </b>
             <b>{{ item['title'] }} &nbsp; | &nbsp; </b>    
             {% if item['status'] == 'Not Started' %}
               <b style="color:#ec6161">{{ item['status'] }}</b> <b> &nbsp; | &nbsp; </b> 
-              <a href="{{ url_for('updateStatus', id = item['id'], new_status = 'In Progress') }}">Start</a> <b> &nbsp; | &nbsp; </b>
+              <a href="{{ url_for('updateStatus', id = item['id'], new_status = 'In Progress') }}">Start Task</a> <b> &nbsp; | &nbsp; </b>
             {% elif item['status'] == 'In Progress' %}
               <b style="color:#f3e566">{{ item['status'] }}</b> <b> &nbsp; | &nbsp; </b>
-              <a href="{{ url_for('updateStatus', id = item['id'], new_status = 'Completed') }}">Complete</a> <b> &nbsp; | &nbsp; </b>
+              <a href="{{ url_for('updateStatus', id = item['id'], new_status = 'Completed') }}">Complete Task</a> <b> &nbsp; | &nbsp; </b>
             {% elif item['status'] == 'Completed' %}
               <b style="color:#65ec61">{{ item['status'] }}</b> <b>&nbsp; | &nbsp; </b>
             {% endif %}
@@ -45,18 +75,18 @@
 
   <!-- Form which will send a POST request to add items into the list -->
   <!-- Not sure why using a different url isn't allowing POST methods, e.g. action="{{ url_for('addItem') }}" -->
-  <div><hr><br>
+  <div><hr class="separator">
     <form method="POST">
-      <label style="color:#BBBBBB">Add a new todo item:
+      <label style="color:#e0e0e0">Add a new task:
         <input type="text" name="itemTitle">
       </label>
       <button>Add</button>
     </form>
-  </div><br>
+  </div>
 
   
   <!-- Try out a refresh link to practice redirects -->
-    <div><hr><br>
+    <div><hr class="separator"><br>
     <p>
     <b><a href="{{ url_for('index') }}">Refresh List</a></b>
     </p> 

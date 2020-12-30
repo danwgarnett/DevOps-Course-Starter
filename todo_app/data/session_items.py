@@ -41,10 +41,12 @@ def add_item(title):
     Returns:
         item: The saved item.
     """
-    items = get_items()
+    
+    # get items and ensure it is sorted by ID (the list is stored sorted by status)
+    items = sorted(get_items(), key=itemgetter('id'), reverse = 1)
 
     # Determine the ID for the item based on that of the previously added item
-    id = items[-1]['id'] + 1 if items else 0
+    id = items[0]['id'] + 1 if items else 0
 
     item = { 'id': id, 'title': title, 'status': 'Not Started' }
 
@@ -115,18 +117,16 @@ def update_item_status(id, new_status):
     return
 
 
-def sort_items():
+def sort_items(current_items):
     """
     Function to sort items based on their status:
     Not Started > In Progress > Completed
-    """
 
-    # Get the current, unsorted list of items
-    current_items = get_items()
+    Args: 
+        current_items: A list of dicts containing the to-do items
+    """
 
     # Note that conveniently, we want reverse alphabetical order, but decorators might be more robust here?
     sorted_items = sorted(current_items, key=itemgetter('status'), reverse = 1)
 
-    session['items'] = sorted_items
-
-    return
+    return sorted_items
