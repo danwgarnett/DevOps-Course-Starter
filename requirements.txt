@@ -1,0 +1,22 @@
+astroid==2.4.2
+certifi==2020.12.5
+chardet==4.0.0
+click @ file:///C:/Users/dan.garnett/AppData/Local/pypoetry/Cache/artifacts/30/bc/bf/e00ffd8f0edf0294942e70e80e42a839bd2649d2c5b864e6389e526d2a/click-7.1.2-py2.py3-none-any.whl
+colorama==0.4.4
+Flask @ file:///C:/Users/dan.garnett/AppData/Local/pypoetry/Cache/artifacts/0a/8b/ac/e30b4f067b6a1660b6e04691990900956f4e864868c7fa0f377389f368/Flask-1.1.2-py2.py3-none-any.whl
+idna==2.10
+isort==5.6.4
+itsdangerous @ file:///C:/Users/dan.garnett/AppData/Local/pypoetry/Cache/artifacts/ed/be/b7/3afa53339fde1838049443e48288a0348e1c636069b0c90f199510d48a/itsdangerous-1.1.0-py2.py3-none-any.whl
+Jinja2 @ file:///C:/Users/dan.garnett/AppData/Local/pypoetry/Cache/artifacts/a0/8d/d0/dce9f8c04cdcf457adcd58424bdacab8a7a2c3c42854fd3c0d2135046e/Jinja2-2.11.2-py2.py3-none-any.whl
+lazy-object-proxy==1.4.3
+MarkupSafe @ file:///C:/Users/dan.garnett/AppData/Local/pypoetry/Cache/artifacts/81/c9/c6/16c9c81737606d9ad09be7dfc836da11c6da30087ee4ad8e786489cc84/MarkupSafe-1.1.1-cp38-cp38-win_amd64.whl
+mccabe==0.6.1
+pylint==2.6.0
+python-dotenv @ file:///C:/Users/dan.garnett/AppData/Local/pypoetry/Cache/artifacts/27/f9/59/016daa70123960d3151e67eec2f6b32e7bae550ac7892b21218139c2ef/python_dotenv-0.14.0-py2.py3-none-any.whl
+requests==2.25.1
+six==1.15.0
+todo-app==0.1.0
+toml==0.10.2
+urllib3==1.26.3
+Werkzeug @ file:///C:/Users/dan.garnett/AppData/Local/pypoetry/Cache/artifacts/71/cb/8f/ea556c118c51e63201517bf1ce46027e851bef2077e67f333349deacf1/Werkzeug-1.0.1-py2.py3-none-any.whl
+wrapt==1.12.1
