@@ -19,7 +19,7 @@ def main():
 def get_user_auth():
 
     # This is a draft workaround until the information is saved in the environment files.
-    with open('../USER_INFO','rt') as cfg_file:
+    with open('todo_app/USER_INFO','rt') as cfg_file:
         cfg_lines = cfg_file.read().split('\n')
     
     key = cfg_lines[0].split(':')
@@ -70,7 +70,6 @@ def get_items(board_id):
         params = user_auth)
     
     board_cards = response.json()
-
     items = [parse_item(card) for card in board_cards]
 
     # for card in board_cards: 
@@ -78,6 +77,21 @@ def get_items(board_id):
     #     items.append(item)
 
     return items
+
+
+def get_item(card_id):
+
+    user_auth = get_user_auth()
+
+    response = requests.request(
+        "GET",
+        f"https://api.trello.com/1/cards/{card_id}",
+        params = user_auth)
+    
+    card = response.json()
+    item = parse_item(card)
+
+    return item
 
 
 def get_list_name(list_id):
@@ -131,7 +145,7 @@ def add_item(board_id, card_name):
     user_auth = get_user_auth()
 
     board_lists = get_available_lists(board_id)
-    todo_list_id = board_lists["To Do"]
+    todo_list_id = board_lists["Not Started"]
 
     params = user_auth
     params.update({"name" : card_name})
@@ -190,6 +204,20 @@ def update_item_status(card_id, new_status):
         params = params)
 
     return response
+
+
+def clear_item(card_id):
+
+    cleared_item = get_item(card_id)
+
+    user_auth = get_user_auth()
+
+    response = requests.request(
+        "DELETE",
+        f"https://api.trello.com/1/cards/{card_id}",
+        params = user_auth)
+
+    return cleared_item
 
 
 if __name__ == '__main__':

@@ -51,9 +51,9 @@
   <div class="row">
     <div class="col-md-12">
       {% if num_open_items > 0 %}
-      <h2 style="color:#e0e0e0">Drat! Thou hast {{ num_open_items }} items upon thine to-do list:</h2><br>
+      <h2 style="color:#e0e0e0">Drat! Thou'st {{ num_open_items }} items yet to do:</h2><br>
       {% else %}
-      <h2 style="color:#e0e0e0">Verily! The list is bare.. Go merrily this day!</h2><br>
+      <h2 style="color:#e0e0e0">Verily! The list is bare!</h2><br>
       {% endif %}
       <ul class="list-group mb-4" style="margin-left: 2em">
         <!-- Use a for loop to process all the items -->
@@ -90,15 +90,15 @@
 
   
   <!-- Try out a refresh link to practice redirects -->
-    <div><hr class="separator"><br>
+  <div><hr class="separator"><br>
     <p>
     <b><a href="{{ url_for('index') }}">Refresh List</a></b>
     </p> 
 
-    <!-- Provide a clear link to delete all items -->
+    <!-- Provide a clear link to delete all items
     <p>
     <b><a href="{{ url_for('clearItems') }}">Clear List</a></b>
-    </p>
+    </p> -->
   </div>
 
 {% endblock %}

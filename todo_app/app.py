@@ -1,6 +1,7 @@
 
 from flask import Flask, render_template, request, redirect, url_for
-from todo_app.data.session_items import get_item, get_items, add_item, clear_items, clear_item, update_item_status, sort_items
+from todo_app.data.session_items import sort_items
+from todo_app.data.trello_items import get_boards, get_items, get_item, add_item, update_item_status, clear_item
 from todo_app.flask_config import Config
 
 app = Flask(__name__)
@@ -11,7 +12,8 @@ app.config.from_object(Config)
 @app.route('/<op_message>')
 def index(op_message = ""):
     # Get the list of items from the pre-loaded session file and sort by status prior to loading
-    items = sort_items(get_items())
+    board_id = get_boards()
+    items = sort_items(get_items(board_id))
 
     # Get the version out from the file
     with open('TODO_APP/VERSION.txt','rt') as ver_file:
@@ -34,7 +36,8 @@ def addItem(op_message = ""):
     item_title = request.form.get('itemTitle')
 
     # Use the title input to add a new item to the file
-    added_item = add_item(item_title)
+    board_id = get_boards()
+    added_item = add_item(board_id, item_title)
 
     # construct operation message to display to user
     op_message = f"Added item: [#{added_item['id']}] \"{added_item['title']}\""
@@ -43,7 +46,7 @@ def addItem(op_message = ""):
     return redirect(url_for('index', op_message = op_message))
 
 
-@app.route('/clearItem/<int:id>')
+@app.route('/clearItem/<id>')
 def clearItem(id):
     # Call low-level function to clear the specified item and return it to update the operation message
     cleared_item = clear_item(id)
@@ -62,7 +65,7 @@ def clearItems():
     return redirect(url_for('index', op_message = op_message))
 
 
-@app.route('/updateStatus/<new_status><int:id>')
+@app.route('/updateStatus/<new_status><id>')
 def updateStatus(id, new_status):
 
     updated_item = get_item(id)
