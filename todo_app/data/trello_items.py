@@ -1,31 +1,28 @@
 import requests
+import os
 from pprint import pprint 
 
 def main():
 
     board_id = get_boards()
     items = get_items(board_id)
-
     pprint(items)
 
-    get_available_lists(board_id)
-
-    get_card_board(items[1]["id"])
-    print(complete_item(items[1]["id"]))
+    lists = get_available_lists(board_id)
+    pprint(lists)
 
     return
 
 
 def get_user_auth():
 
-    # This is a draft workaround until the information is saved in the environment files.
-    with open('todo_app/USER_INFO','rt') as cfg_file:
-        cfg_lines = cfg_file.read().split('\n')
-    
-    key = cfg_lines[0].split(':')
-    token = cfg_lines[1].split(':')
+    TRELLO_KEY = os.environ.get('TRELLO_KEY')
+    TRELLO_TOKEN = os.environ.get('TRELLO_TOKEN')
 
-    user_auth = {"key":key[1], "token":token[1]}
+    if not(TRELLO_KEY and TRELLO_TOKEN):
+        raise ValueError("No authentication data found for Trello API - please add to .env file")
+
+    user_auth = {"key":TRELLO_KEY, "token":TRELLO_TOKEN}
 
     return user_auth
 
@@ -71,10 +68,6 @@ def get_items(board_id):
     
     board_cards = response.json()
     items = [parse_item(card) for card in board_cards]
-
-    # for card in board_cards: 
-    #     item = parse_item(card)
-    #     items.append(item)
 
     return items
 
@@ -145,7 +138,7 @@ def add_item(board_id, card_name):
     user_auth = get_user_auth()
 
     board_lists = get_available_lists(board_id)
-    todo_list_id = board_lists["Not Started"]
+    todo_list_id = board_lists["To Do"]
 
     params = user_auth
     params.update({"name" : card_name})
@@ -160,28 +153,6 @@ def add_item(board_id, card_name):
     new_item = parse_item(new_card)
 
     return new_item
-
-
-def complete_item(card_id):
-
-    user_auth = get_user_auth()
-
-    card_board = get_card_board(card_id)
-    board_id = card_board["id"]
-
-    board_lists = get_available_lists(board_id)
-    done_list_id = board_lists["Done"]
-    list_update = {"idList" : done_list_id}
-
-    params = user_auth
-    params.update(list_update)
-
-    response = requests.request(
-        "PUT",
-        f"https://api.trello.com/1/cards/{card_id}",
-        params = params)
-
-    return response
 
 
 def update_item_status(card_id, new_status):
@@ -208,10 +179,9 @@ def update_item_status(card_id, new_status):
 
 def clear_item(card_id):
 
-    cleared_item = get_item(card_id)
-
     user_auth = get_user_auth()
-
+    cleared_item = get_item(card_id)
+ 
     response = requests.request(
         "DELETE",
         f"https://api.trello.com/1/cards/{card_id}",

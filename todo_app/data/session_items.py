@@ -120,7 +120,7 @@ def update_item_status(id, new_status):
 def sort_items(current_items):
     """
     Function to sort items based on their status:
-    Not Started > In Progress > Completed
+    To Do > Doing > Done
 
     Args: 
         current_items: A list of dicts containing the to-do items
