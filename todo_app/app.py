@@ -36,7 +36,7 @@ def add_item(op_message = ""):
     item_title = request.form.get('itemTitle')
     added_item = trello.add_item(board_id, item_title)
 
-    op_message = f"Added item: [#{added_item['id']}] \"{added_item['title']}\""    
+    op_message = f"Added item: \"{added_item['title']}\""    
     return redirect(url_for('index', op_message = op_message))
 
 
@@ -45,7 +45,7 @@ def clear_item(id):
 
     cleared_item = trello.clear_item(id)
 
-    op_message = f"Cleared item: [#{cleared_item['id']}] \"{cleared_item['title']}\""
+    op_message = f"Cleared item: \"{cleared_item['title']}\""
     return redirect(url_for('index', op_message = op_message))
 
 
@@ -70,8 +70,8 @@ def update_status(id, new_status):
 
     trello.update_item_status(id, new_status)
 
-    op_message = f"Updated item [#{updated_item['id']}] \"{updated_item['title']}\":   " \
-               + f"  Status changed from \"{old_status}\" to \"{new_status}\"."
+    op_message = f"Updated item \"{updated_item['title']}\":   " \
+               + f"    Status changed from \"{old_status}\" to \"{new_status}\"."
     return redirect(url_for('index', op_message = op_message))
 
 
