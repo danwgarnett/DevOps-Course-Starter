@@ -1,7 +1,7 @@
 from todo_app.flask_config import Config
 from flask import Flask, render_template, request, redirect, url_for
 import pkg_resources
-from todo_app.data.trello_class import trelloBoard
+from todo_app.data.trello_class import TrelloBoard
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -11,7 +11,7 @@ app.config.from_object(Config)
 @app.route('/<op_message>')
 def index(op_message = ""):
 
-    current_board = trelloBoard()
+    current_board = TrelloBoard()
     items = current_board.board_items
 
     open_items = [item for item in items if item.list["name"] != 'Done']
@@ -33,7 +33,7 @@ def add_item(op_message = ""):
 
     item_title = request.form.get('new_item_title')
 
-    current_board = trelloBoard()
+    current_board = TrelloBoard()
     added_item = current_board.add_item(item_title)
 
     op_message = f"Added item: \"{added_item.title}\""    
@@ -43,7 +43,7 @@ def add_item(op_message = ""):
 @app.route('/clear_item/<id>')
 def clear_item(id):
 
-    current_board = trelloBoard()
+    current_board = TrelloBoard()
     cleared_item = current_board.get_item(id)
     cleared_item.clear_item()
 
@@ -54,7 +54,7 @@ def clear_item(id):
 @app.route('/clear_items')
 def clear_items():
 
-    current_board = trelloBoard()
+    current_board = TrelloBoard()
     current_board.board_id
     items = current_board.board_items
 
@@ -68,7 +68,7 @@ def clear_items():
 @app.route('/update_status/<new_status>/<id>')
 def update_status(id, new_status):
 
-    current_board = trelloBoard()
+    current_board = TrelloBoard()
     updated_item = current_board.get_item(id)
     old_status = updated_item.list['name']
 

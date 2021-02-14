@@ -1,17 +1,16 @@
 import requests
 import os
-from pprint import pprint 
 
 def main():
 
-    my_board = trelloBoard()
+    my_board = TrelloBoard()
     print(my_board.user_auth)
     print(my_board.board_items)
 
     return
 
 
-class trelloBoard:
+class TrelloBoard:
 
     def __init__(self):
 
@@ -55,36 +54,13 @@ class trelloBoard:
 
         def get_items(self):
 
-            def get_list_name(self, list_id):
-
-                response = requests.request(
-                    "GET",
-                    f"https://api.trello.com/1/lists/{list_id}",
-                    params = self.user_auth)
-
-                list_data = response.json()
-                list_name = list_data["name"]
-
-                return list_name
-
-            def parse_item(card):
-                card_id = card["id"]
-                card_name = card["name"]
-
-                list_id = card["idList"]
-                card_list = {"name" : get_list_name(self, list_id) , "id" : list_id}
-
-                item = trelloItem(self, card_id, card_name, card_list)
-
-                return item
-
             response = requests.request(
                 "GET",
                 f"https://api.trello.com/1/boards/{self.board_id}/cards",
                 params = self.user_auth)
             
             board_cards = response.json()
-            self.board_items = [parse_item(card) for card in board_cards]
+            self.board_items = [parse_item(self, card) for card in board_cards]
 
             return
 
@@ -95,18 +71,6 @@ class trelloBoard:
 
 
     def add_item(self, new_card_name, new_card_list = "To Do"):
-
-        def get_list_name(self, list_id):
-
-            response = requests.request(
-                "GET",
-                f"https://api.trello.com/1/lists/{list_id}",
-                params = self.user_auth)
-
-            list_data = response.json()
-            list_name = list_data["name"]
-
-            return list_name
 
         board_lists = self.board_lists
         todo_list_id = board_lists[new_card_list]
@@ -121,30 +85,11 @@ class trelloBoard:
             params = params)
 
         new_card = response.json()
-
-        card_id = new_card["id"]
-        card_name = new_card["name"]
-
-        list_id = new_card["idList"]
-        card_list = {"name" : get_list_name(self, list_id) , "id" : list_id}
-
-        item = trelloItem(self, card_id, card_name, card_list)
+        item = parse_item(self, new_card)
 
         return item
 
     def get_item(self, card_id):
-
-        def get_list_name(self, list_id):
-
-            response = requests.request(
-                "GET",
-                f"https://api.trello.com/1/lists/{list_id}",
-                params = self.user_auth)
-
-            list_data = response.json()
-            list_name = list_data["name"]
-
-            return list_name
 
         response = requests.request(
             "GET",
@@ -152,19 +97,37 @@ class trelloBoard:
             params = self.user_auth)
         
         card = response.json()
-        
-        card_id = card["id"]
-        card_name = card["name"]
-
-        list_id = card["idList"]
-        card_list = {"name" : get_list_name(self, list_id) , "id" : list_id}
-
-        item = trelloItem(self, card_id, card_name, card_list)
+        item = parse_item(self, card)
 
         return item
 
 
-class trelloItem:
+def parse_item(board, card):
+
+    def get_list_name(board, list_id):
+
+        response = requests.request(
+            "GET",
+            f"https://api.trello.com/1/lists/{list_id}",
+            params = board.user_auth)
+
+        list_data = response.json()
+        list_name = list_data["name"]
+
+        return list_name
+
+    card_id = card["id"]
+    card_name = card["name"]
+
+    list_id = card["idList"]
+    card_list = {"name" : get_list_name(board, list_id) , "id" : list_id}
+
+    item = TrelloItem(board, card_id, card_name, card_list)
+
+    return item
+
+
+class TrelloItem:
 
     def __init__(self, board, card_id, card_name, card_list):
 
