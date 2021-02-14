@@ -1,7 +1,6 @@
 from todo_app.flask_config import Config
 from flask import Flask, render_template, request, redirect, url_for
-import pkg_resources
-from todo_app.data.trello_class import TrelloBoard
+from todo_app.data.trello_items import TrelloBoard
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,12 +16,7 @@ def index(op_message = ""):
     open_items = [item for item in items if item.list["name"] != 'Done']
     num_open_items = len(open_items)
 
-    # Get the version out from the file - left this syntax in as the pyproject toml version doesn't seem to update.
-    # with open('TODO_APP/VERSION.txt','rt') as ver_file:
-    #     ver = ver_file.read()
-    ver = pkg_resources.get_distribution('todo-app').version
-
-    return render_template("index.html", version = ver, todo_items = items,
+    return render_template("index.html", todo_items = items,
          op_message = op_message,
          num_open_items = num_open_items)
 
@@ -71,11 +65,48 @@ def update_status(id, new_status):
     updated_item = current_board.get_item(id)
     old_status = updated_item.list['name']
 
-    updated_item.update_item_status(new_status)
+    updated_item.update_item("status", new_status)
 
     op_message = f"Updated item \"{updated_item.title}\":   " \
                + f"    Status changed from \"{old_status}\" to \"{new_status}\"."
     return redirect(url_for('index', op_message = op_message))
+
+
+@app.route('/edit_item_page/<id>')
+def edit_item_page(id):
+
+    current_board = TrelloBoard()
+    current_board.get_item(id)
+    item = current_board.get_item(id)
+
+    return render_template("edit_item_page.html", item = item)
+
+
+@app.route('/edit_item_page/<id>', methods=['POST'])
+def edit_item_fields(id):
+
+    current_board = TrelloBoard()
+    item_to_update = current_board.get_item(id)
+
+    new_title = request.form.get('new_item_title')
+    new_description = request.form.get('new_item_description')
+
+    if new_title:
+        item_to_update.update_item("title", new_title)
+    elif new_description:
+        item_to_update.update_item("description", new_description)
+
+    return redirect(url_for('edit_item_page', id = id))
+
+
+@app.route('/edit_item_status/<id>/<new_status>')
+def edit_item_status(id, new_status):
+
+    current_board = TrelloBoard()
+    item_to_update = current_board.get_item(id)
+    item_to_update.update_item("status", new_status)
+
+    return redirect(url_for('edit_item_page', id = id))
 
 
 if __name__ == '__main__':
