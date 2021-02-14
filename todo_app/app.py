@@ -1,8 +1,7 @@
 from todo_app.flask_config import Config
 from flask import Flask, render_template, request, redirect, url_for
 import pkg_resources
-from todo_app.data.session_items import sort_items
-import todo_app.data.trello_items as trello
+from todo_app.data.trello_class import trelloBoard
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -12,10 +11,10 @@ app.config.from_object(Config)
 @app.route('/<op_message>')
 def index(op_message = ""):
 
-    board_id = trello.get_boards()
-    items = sort_items(trello.get_items(board_id))
+    current_board = trelloBoard()
+    items = current_board.board_items
 
-    open_items = [item for item in items if item['status'] != 'Done']
+    open_items = [item for item in items if item.list["name"] != 'Done']
     num_open_items = len(open_items)
 
     # Get the version out from the file - left this syntax in as the pyproject toml version doesn't seem to update.
@@ -32,31 +31,35 @@ def index(op_message = ""):
 @app.route('/<op_message>', methods=['POST'])
 def add_item(op_message = ""):
 
-    board_id = trello.get_boards()
-    item_title = request.form.get('itemTitle')
-    added_item = trello.add_item(board_id, item_title)
+    item_title = request.form.get('new_item_title')
 
-    op_message = f"Added item: \"{added_item['title']}\""    
+    current_board = trelloBoard()
+    added_item = current_board.add_item(item_title)
+
+    op_message = f"Added item: \"{added_item.title}\""    
     return redirect(url_for('index', op_message = op_message))
 
 
 @app.route('/clear_item/<id>')
 def clear_item(id):
 
-    cleared_item = trello.clear_item(id)
+    current_board = trelloBoard()
+    cleared_item = current_board.get_item(id)
+    cleared_item.clear_item()
 
-    op_message = f"Cleared item: \"{cleared_item['title']}\""
+    op_message = f"Cleared item: \"{cleared_item.title}\""
     return redirect(url_for('index', op_message = op_message))
 
 
 @app.route('/clear_items')
 def clear_items():
 
-    board_id = trello.get_boards()
-    items = trello.get_items(board_id)
+    current_board = trelloBoard()
+    current_board.board_id
+    items = current_board.board_items
 
     for item in items:
-        trello.clear_item(item["id"])
+        item.clear_item()
 
     op_message = "Cleared all items -  hope they weren't important!"
     return redirect(url_for('index', op_message = op_message))
@@ -65,12 +68,13 @@ def clear_items():
 @app.route('/update_status/<new_status>/<id>')
 def update_status(id, new_status):
 
-    updated_item = trello.get_item(id)
-    old_status = updated_item['status']
+    current_board = trelloBoard()
+    updated_item = current_board.get_item(id)
+    old_status = updated_item.list['name']
 
-    trello.update_item_status(id, new_status)
+    updated_item.update_item_status(new_status)
 
-    op_message = f"Updated item \"{updated_item['title']}\":   " \
+    op_message = f"Updated item \"{updated_item.title}\":   " \
                + f"    Status changed from \"{old_status}\" to \"{new_status}\"."
     return redirect(url_for('index', op_message = op_message))
 

@@ -61,17 +61,17 @@
         <!-- Use a for loop to process all the items -->
         {% for item in todo_items %}
           <p style="color:#e0e0e0">
-            <b>{{ item['title'] }} &nbsp; | &nbsp; </b>    
-            {% if item['status'] == 'To Do' %}
-              <b style="color:#ec6161">{{ item['status'] }}</b> <b> &nbsp; | &nbsp; </b> 
-              <a href="{{ url_for('update_status', id = item['id'], new_status = 'Doing') }}">Start Task</a> <b> &nbsp; | &nbsp; </b>
-            {% elif item['status'] == 'Doing' %}
-              <b style="color:#f3e566">{{ item['status'] }}</b> <b> &nbsp; | &nbsp; </b>
-              <a href="{{ url_for('update_status', id = item['id'], new_status = 'Done') }}">Complete Task</a> <b> &nbsp; | &nbsp; </b>
-            {% elif item['status'] == 'Done' %}
-              <b style="color:#65ec61">{{ item['status'] }}</b> <b>&nbsp; | &nbsp; </b>
+            <b>{{ item.title }} &nbsp; | &nbsp; </b>    
+            {% if item.list['name'] == 'To Do' %}
+              <b style="color:#ec6161">{{ item.list['name'] }}</b> <b> &nbsp; | &nbsp; </b> 
+              <a href="{{ url_for('update_status', id = item.id, new_status = 'Doing') }}">Start Task</a> <b> &nbsp; | &nbsp; </b>
+            {% elif item.list['name'] == 'Doing' %}
+              <b style="color:#f3e566">{{ item.list['name'] }}</b> <b> &nbsp; | &nbsp; </b>
+              <a href="{{ url_for('update_status', id = item.id, new_status = 'Done') }}">Complete Task</a> <b> &nbsp; | &nbsp; </b>
+            {% elif item.list['name'] == 'Done' %}
+              <b style="color:#65ec61">{{ item.list['name'] }}</b> <b>&nbsp; | &nbsp; </b>
             {% endif %}
-            <a href="{{ url_for('clear_item', id = item['id']) }}">Clear Item</a>
+            <a href="{{ url_for('clear_item', id = item.id) }}">Clear Item</a>
           </p>
         {% endfor %}
       </ul>
@@ -83,7 +83,7 @@
   <div><hr class="separator">
     <form method="POST">
       <label style="color:#e0e0e0">Add a new task:
-        <input type="text" name="itemTitle">
+        <input type="text" name="new_item_title">
       </label>
       <button>Add</button>
     </form>
