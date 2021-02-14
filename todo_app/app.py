@@ -55,7 +55,6 @@ def clear_item(id):
 def clear_items():
 
     current_board = TrelloBoard()
-    current_board.board_id
     items = current_board.board_items
 
     for item in items:
