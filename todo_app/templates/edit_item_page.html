@@ -1,0 +1,123 @@
+{% extends "layout.html" %}
+{% block title %} [to_do || !to_do] app {% endblock %}
+
+{% block content %}
+<style type="text/css">
+  .jumbotron{
+    background-image: url('https://i.ibb.co/JdznB2j/thug-shakespeare.jpg');
+    background-size: cover;
+    color: #f8fae7;
+    font-weight: bold;
+  }
+
+  .bigTitle{
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 4rem;
+    font-weight: 350;
+    line-height: 1.2;
+    text-shadow: 3px 3px #080808;
+  }
+
+  .subTitle{
+      font-size: 2.25rem;
+      font-weight: 400;
+      line-height: 1;
+      text-shadow: 3px 3px #080808;
+  }
+
+  .separator{
+    border: 1.5px;
+    border-style:solid;
+  }
+</style>
+
+<body style="background-color:#434446;">
+</body>
+
+  <div class="jumbotron">
+    <h1 class="bigTitle"><b>[to_do||!to_do]</b></h1> 
+ <!--   <p style="margin-left: 30em; color: #333333;"> Version: {{ version }} </p> -->
+    <p class="subTitle"> &nbsp; ...that is the question...</p>
+  </div>
+
+
+  <!-- Display a banner message for the user each time an operation is completed -->
+  {% if op_message %}
+    <div>
+      <p style="color:orange"> {{ op_message }} </p>
+    </div>
+  {% endif %}
+
+
+  <!-- Display the list itself -->
+  <div class="row">
+    <div class="col-md-12">
+      <h2 style="color:#e0e0e0">
+      {% if item.list['name'] == 'To Do' %}
+        <b style="color:#ec6161">{{ item.list['name'] }}</b> <b> &nbsp; | &nbsp; </b> 
+      {% elif item.list['name'] == 'Doing' %}
+        <b style="color:#f3e566">{{ item.list['name'] }}</b> <b> &nbsp; | &nbsp; </b>
+      {% elif item.list['name'] == 'Done' %}
+        <b style="color:#65ec61">{{ item.list['name'] }}</b> <b>&nbsp; | &nbsp; </b>
+      {% endif %}
+      
+      {{ item.title }}</h2><br>
+    </div>
+  </div>
+
+  <div>
+    <p style="color:#e0e0e0">
+      <b>Description:</b>
+    </p>
+    <p style="color:#e0e0e0">
+      {{ item.description }}
+    </p>
+  </div><br>
+
+  <div>
+    <ul class="list-group mb-4">
+        <p style="color:#e0e0e0">   
+          {% if item.list['name'] == 'To Do' %}
+            <a href="{{ url_for('edit_item_status', id = item.id, new_status = 'Doing') }}">Start Task</a> <b> &nbsp; | &nbsp; </b>
+          {% elif item.list['name'] == 'Doing' %}
+            <a href="{{ url_for('edit_item_status', id = item.id, new_status = 'Done') }}">Complete Task</a> <b> &nbsp; | &nbsp; </b>
+          {% elif item.list['name'] == 'Done' %}
+            <a href="{{ url_for('edit_item_status', id = item.id, new_status = 'Doing') }}">Re-open Item</a> <b>&nbsp; | &nbsp; </b>
+          {% endif %}
+          <a href="{{ url_for('clear_item', id = item.id) }}">Clear Item</a>
+        </p>
+    </ul>
+  </div>
+
+  
+  <div><hr class="separator">
+    <p style="color:#e0e0e0">
+      <b>Update Item Fields:</b>
+    </p>
+    <form method="POST">
+      <label style="color:#e0e0e0">Update item title:
+        <input type="text" name="new_item_title">
+      </label>
+      <button>Update</button>
+    </form>
+  </div>
+
+  <div>
+    <form method="POST">
+      <label style="color:#e0e0e0">Update item description:
+        <input type="text" name="new_item_description">
+      </label>
+      <button>Update</button>
+    </form>
+  </div>
+
+  
+  <!-- Try out a refresh link to practice redirects -->
+  <div><hr class="separator">
+    <p>
+    <b><a href="{{ url_for('index') }}">Return to List</a></b>
+    </p> 
+  </div>
+
+
+{% endblock %}

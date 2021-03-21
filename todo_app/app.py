@@ -1,7 +1,6 @@
-
-from flask import Flask, render_template, request, redirect, url_for
-from todo_app.data.session_items import get_item, get_items, add_item, clear_items, clear_item, update_item_status, sort_items
 from todo_app.flask_config import Config
+from flask import Flask, render_template, request, redirect, url_for
+from todo_app.data.trello_items import TrelloBoard
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -10,71 +9,104 @@ app.config.from_object(Config)
 @app.route('/')
 @app.route('/<op_message>')
 def index(op_message = ""):
-    # Get the list of items from the pre-loaded session file and sort by status prior to loading
-    items = sort_items(get_items())
 
-    # Get the version out from the file
-    with open('TODO_APP/VERSION.txt','rt') as ver_file:
-        ver = ver_file.read()
+    current_board = TrelloBoard()
+    items = current_board.board_items
 
-    # Count the items not completed
-    open_items = [item for item in items if item['status'] != 'Completed']
+    open_items = [item for item in items if item.list["name"] != 'Done']
     num_open_items = len(open_items)
 
-    # Render the index template, displaying the list items and an update for the last performed action as required
-    return render_template("index.html", version = ver, todo_items = items,\
-         op_message = op_message,\
+    return render_template("index.html", todo_items = items,
+         op_message = op_message,
          num_open_items = num_open_items)
 
 
 @app.route('/', methods=['POST'])
 @app.route('/<op_message>', methods=['POST'])
-def addItem(op_message = ""):
-    # Get the item title which has been entered into the form
-    item_title = request.form.get('itemTitle')
+def add_item(op_message = ""):
 
-    # Use the title input to add a new item to the file
-    added_item = add_item(item_title)
+    item_title = request.form.get('new_item_title')
 
-    # construct operation message to display to user
-    op_message = f"Added item: [#{added_item['id']}] \"{added_item['title']}\""
+    current_board = TrelloBoard()
+    added_item = current_board.add_item(item_title)
 
-    # Reload the index template to display the list with its new item
+    op_message = f"Added item: \"{added_item.title}\""    
     return redirect(url_for('index', op_message = op_message))
 
 
-@app.route('/clearItem/<int:id>')
-def clearItem(id):
-    # Call low-level function to clear the specified item and return it to update the operation message
-    cleared_item = clear_item(id)
-    op_message = f"Cleared item: [#{cleared_item['id']}] \"{cleared_item['title']}\""
+@app.route('/clear_item/<id>')
+def clear_item(id):
 
-    # Reload the index template to display the list post-clear
+    current_board = TrelloBoard()
+    cleared_item = current_board.get_item(id)
+    cleared_item.clear_item()
+
+    op_message = f"Cleared item: \"{cleared_item.title}\""
     return redirect(url_for('index', op_message = op_message))
 
 
-@app.route('/clearItems')
-def clearItems():
-    clear_items()
+@app.route('/clear_items')
+def clear_items():
 
-    # Reload the index template to display the list post-clear
+    current_board = TrelloBoard()
+    items = current_board.board_items
+
+    for item in items:
+        item.clear_item()
+
     op_message = "Cleared all items -  hope they weren't important!"
     return redirect(url_for('index', op_message = op_message))
 
 
-@app.route('/updateStatus/<new_status><int:id>')
-def updateStatus(id, new_status):
+@app.route('/update_status/<new_status>/<id>')
+def update_status(id, new_status):
 
-    updated_item = get_item(id)
-    old_status = updated_item['status']
+    current_board = TrelloBoard()
+    updated_item = current_board.get_item(id)
+    old_status = updated_item.list['name']
 
-    update_item_status(id, new_status)
+    updated_item.update_item("status", new_status)
 
-    # construct operation message to display to user
-    op_message = f"Updated item [#{updated_item['id']}] \"{updated_item['title']}\":   " \
-        + f"  Status changed from \"{old_status}\" to \"{new_status}\"."
-    
+    op_message = f"Updated item \"{updated_item.title}\":   " \
+               + f"    Status changed from \"{old_status}\" to \"{new_status}\"."
     return redirect(url_for('index', op_message = op_message))
+
+
+@app.route('/edit_item_page/<id>')
+def edit_item_page(id):
+
+    current_board = TrelloBoard()
+    current_board.get_item(id)
+    item = current_board.get_item(id)
+
+    return render_template("edit_item_page.html", item = item)
+
+
+@app.route('/edit_item_page/<id>', methods=['POST'])
+def edit_item_fields(id):
+
+    current_board = TrelloBoard()
+    item_to_update = current_board.get_item(id)
+
+    new_title = request.form.get('new_item_title')
+    new_description = request.form.get('new_item_description')
+
+    if new_title:
+        item_to_update.update_item("title", new_title)
+    elif new_description:
+        item_to_update.update_item("description", new_description)
+
+    return redirect(url_for('edit_item_page', id = id))
+
+
+@app.route('/edit_item_status/<id>/<new_status>')
+def edit_item_status(id, new_status):
+
+    current_board = TrelloBoard()
+    item_to_update = current_board.get_item(id)
+    item_to_update.update_item("status", new_status)
+
+    return redirect(url_for('edit_item_page', id = id))
 
 
 if __name__ == '__main__':
