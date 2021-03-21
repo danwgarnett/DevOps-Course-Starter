@@ -1,14 +1,6 @@
 import requests
 import os
 
-def main():
-
-    my_board = TrelloBoard()
-    print(my_board.user_auth)
-    print(my_board.board_items)
-
-    return
-
 
 class TrelloBoard:
 
@@ -139,9 +131,7 @@ def get_available_lists(board):
         params = board.user_auth)
     
     board_lists_raw = response.json()
-
-    board_lists = {}
-    [board_lists.update({list["name"] : list["id"]}) for list in board_lists_raw]
+    board_lists = { list["name"] : list["id"] for list in board_lists_raw }
 
     return board_lists
 
@@ -184,7 +174,3 @@ def get_items(board):
     board_items = [parse_item(board, card) for card in board_cards]
 
     return board_items
-
-
-if __name__ == '__main__':
-    main()
