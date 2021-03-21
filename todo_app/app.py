@@ -1,6 +1,6 @@
 from todo_app.flask_config import Config
 from flask import Flask, render_template, request, redirect, url_for
-from todo_app.data.trello_items import TrelloBoard
+from todo_app.data.trello_items import TrelloBoard, ViewModel
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -12,13 +12,9 @@ def index(op_message = ""):
 
     current_board = TrelloBoard()
     items = current_board.board_items
+    item_view_model = ViewModel(items)
 
-    open_items = [item for item in items if item.list["name"] != 'Done']
-    num_open_items = len(open_items)
-
-    return render_template("index.html", todo_items = items,
-         op_message = op_message,
-         num_open_items = num_open_items)
+    return render_template("index.html", view_model = item_view_model, op_message = op_message)
 
 
 @app.route('/', methods=['POST'])

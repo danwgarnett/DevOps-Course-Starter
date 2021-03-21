@@ -52,14 +52,14 @@
   <!-- Display the list itself -->
   <div class="row">
     <div class="col-md-12">
-      {% if num_open_items > 0 %}
-      <h2 style="color:#e0e0e0">Drat! Thou'st {{ num_open_items }} items yet to complete:</h2><br>
+      {% if view_model.num_open_items > 0 %}
+      <h2 style="color:#e0e0e0">Drat! Thou'st {{ view_model.num_open_items }} items yet to complete:</h2><br>
       {% else %}
       <h2 style="color:#e0e0e0">Verily! The list is bare!</h2><br>
       {% endif %}
       <ul class="list-group mb-4" style="margin-left: 2em">
         <!-- Use a for loop to process all the items -->
-        {% for item in todo_items %}
+        {% for item in view_model.items %}
           <p style="color:#e0e0e0">
             {% if item.list['name'] == 'To Do' %}
               <b style="color:#ec6161">{{ item.list['name'] }}</b> <b> &nbsp; | &nbsp; </b> 

@@ -2,6 +2,19 @@ import requests
 import os
 
 
+class ViewModel:
+    def __init__(self, items):
+        self._items = items
+
+        open_items = [item for item in items if item.list["name"] != 'Done']
+        self.num_open_items = len(open_items)
+
+    @property
+    def items(self):
+        return self._items
+
+
+
 class TrelloBoard:
 
     def __init__(self):
