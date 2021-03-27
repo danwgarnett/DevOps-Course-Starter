@@ -13,6 +13,20 @@ class ViewModel:
     def items(self):
         return self._items
 
+    @property
+    def todo_items(self):
+        todo_items = [item for item in self._items if item.list["name"] == 'To Do']
+        return todo_items
+
+    @property
+    def doing_items(self):
+        doing_items = [item for item in self._items if item.list["name"] == 'Doing']
+        return doing_items
+
+    @property
+    def done_items(self):
+        done_items = [item for item in self._items if item.list["name"] == 'Done']
+        return done_items
 
 
 class TrelloBoard:
