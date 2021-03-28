@@ -64,3 +64,17 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 # Trello Notes:
 
 The app uses 3 specific lists, "To Do", "Doing" and "Done" as per the defaults supplied by Trello.
+
+## Testing
+
+Unit tests are defined for the ViewModel class in the file test_app_viewmodel.py.
+These tests can be run automatically by running the command:
+```bash
+$ poetry run pytest
+```
+While pointed to \DevOps-Course-Starter.
+
+# ViewModel test cases
+A fixture is provided for a short list for the base functionalities, while specific test cases can be constructed using the create_test_list() function. Supply the required number of tasks of a given type and a flag to determine whether the last update was today or at a date in the past.
+
+Use the list.extend method to build these constructed sub-lists into a general test list.

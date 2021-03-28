@@ -2,33 +2,6 @@ import requests
 import os
 
 
-class ViewModel:
-    def __init__(self, items):
-        self._items = items
-
-        open_items = [item for item in items if item.list["name"] != 'Done']
-        self.num_open_items = len(open_items)
-
-    @property
-    def items(self):
-        return self._items
-
-    @property
-    def todo_items(self):
-        todo_items = [item for item in self._items if item.list["name"] == 'To Do']
-        return todo_items
-
-    @property
-    def doing_items(self):
-        doing_items = [item for item in self._items if item.list["name"] == 'Doing']
-        return doing_items
-
-    @property
-    def done_items(self):
-        done_items = [item for item in self._items if item.list["name"] == 'Done']
-        return done_items
-
-
 class TrelloBoard:
 
     def __init__(self):
@@ -73,7 +46,7 @@ class TrelloBoard:
 
 class TrelloItem:
 
-    def __init__(self, board, card_id, card_name, card_list, description):
+    def __init__(self, board, card_id, card_name, card_list, description, last_updated):
 
         self.user_auth = board.user_auth
         self.board_id = board.board_id
@@ -82,6 +55,7 @@ class TrelloItem:
         self.title = card_name
         self.list = card_list
         self.description = description
+        self.last_updated = last_updated
         # self.due_date = ""
 
     def update_item(self, parameter, input_string):
@@ -179,13 +153,12 @@ def parse_item(board, card):
 
     card_id = card["id"]
     card_name = card["name"]
-
     list_id = card["idList"]
     card_list = {"name" : get_list_name(board, list_id) , "id" : list_id}
-
     description = card["desc"]
+    last_updated = card["dateLastActivity"]
 
-    item = TrelloItem(board, card_id, card_name, card_list, description)
+    item = TrelloItem(board, card_id, card_name, card_list, description, last_updated)
 
     return item
 

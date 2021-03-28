@@ -57,6 +57,9 @@
       {% else %}
       <h2 style="color:#e0e0e0">Verily! The list is bare!</h2><br>
       {% endif %}
+      <p style="color:#e0e0e0">
+        <b> Items in progress </b>
+      </p>
       <ul class="list-group mb-4" style="margin-left: 2em">
         <!-- Use a for loop to process all the items -->
         {% for item in view_model.items %}
@@ -65,15 +68,33 @@
               <b style="color:#ec6161">{{ item.list['name'] }}</b> <b> &nbsp; | &nbsp; </b> 
               <b>{{ item.title }} &nbsp; | &nbsp; </b>    
               <a href="{{ url_for('update_status', id = item.id, new_status = 'Doing') }}">Start Task</a> <b> &nbsp; | &nbsp; </b>
-            {% elif item.list['name'] == 'Doing' %}
+              <a href="{{ url_for('edit_item_page', id = item.id) }}">Edit Item</a> <b>&nbsp; | &nbsp; </b>
+              <a href="{{ url_for('clear_item', id = item.id) }}">Clear Item</a>
+              {% elif item.list['name'] == 'Doing' %}
               <b style="color:#f3e566">{{ item.list['name'] }}</b> <b> &nbsp; | &nbsp; </b>
               <b>{{ item.title }} &nbsp; | &nbsp; </b>    
               <a href="{{ url_for('update_status', id = item.id, new_status = 'Done') }}">Complete Task</a> <b> &nbsp; | &nbsp; </b>
-            {% elif item.list['name'] == 'Done' %}
-              <b style="color:#65ec61">{{ item.list['name'] }}</b> <b>&nbsp; | &nbsp; </b>
-              <b>{{ item.title }} &nbsp; | &nbsp; </b>    
-              <a href="{{ url_for('update_status', id = item.id, new_status = 'Doing') }}">Re-open Item</a> <b>&nbsp; | &nbsp; </b>
+              <a href="{{ url_for('edit_item_page', id = item.id) }}">Edit Item</a> <b>&nbsp; | &nbsp; </b>
+              <a href="{{ url_for('clear_item', id = item.id) }}">Clear Item</a>
             {% endif %}
+          </p>
+        {% endfor %}
+      </ul>
+      <p style="color:#e0e0e0">
+        {% if view_model.show_all_done_items %}
+        <b> Completed Items </b>&nbsp;
+        <a href="{{ url_for('show_all_done_toggle', show_all = False) }}">Show Recent</a></b>
+        {% else %}
+        <b> Completed Items </b>&nbsp;
+        <a href="{{ url_for('show_all_done_toggle', show_all = True) }}">Show All</a></b>
+        {% endif %}
+      </p>
+      <ul class="list-group mb-4" style="margin-left: 2em">
+        {% for item in view_model.filtered_done_items %}
+          <p style="color:#e0e0e0">
+            <b style="color:#65ec61">{{ item.list['name'] }}</b> <b>&nbsp; | &nbsp; </b>
+            <b>{{ item.title }} &nbsp; | &nbsp; </b>    
+            <a href="{{ url_for('update_status', id = item.id, new_status = 'Doing') }}">Re-open Item</a> <b>&nbsp; | &nbsp; </b>
             <a href="{{ url_for('edit_item_page', id = item.id) }}">Edit Item</a> <b>&nbsp; | &nbsp; </b>
             <a href="{{ url_for('clear_item', id = item.id) }}">Clear Item</a>
           </p>

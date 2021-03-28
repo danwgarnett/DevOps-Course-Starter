@@ -1,6 +1,7 @@
 from todo_app.flask_config import Config
 from flask import Flask, render_template, request, redirect, url_for
-from todo_app.data.trello_items import TrelloBoard, ViewModel
+from todo_app.data.trello_items import TrelloBoard
+from todo_app.data.trello_view_model import ViewModel
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -66,6 +67,21 @@ def update_status(id, new_status):
     op_message = f"Updated item \"{updated_item.title}\":   " \
                + f"    Status changed from \"{old_status}\" to \"{new_status}\"."
     return redirect(url_for('index', op_message = op_message))
+
+
+@app.route('/show_all_done_toggle/<show_all>')
+def show_all_done_toggle(show_all):
+
+    current_board = TrelloBoard()
+    items = current_board.board_items
+    item_view_model = ViewModel(items)
+
+    if show_all == 'True':
+        item_view_model.show_all_done_items = True
+    else:
+        item_view_model.show_all_done_items = False
+
+    return render_template("index.html", view_model = item_view_model)
 
 
 @app.route('/edit_item_page/<id>')
